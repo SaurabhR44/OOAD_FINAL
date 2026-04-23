@@ -1,0 +1,15 @@
+{
+    "name": "adaptive-exam-system-root",
+    "version": "1.0.0",
+    "scripts": {
+        "start:backend": "powershell -NoProfile -Command \"$env:JAVA_HOME = 'C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.17.10-hotspot'; $env:PATH = $env:JAVA_HOME + '/bin;' + $env:PATH; cd e:\\OOAD_MP_HASEEB\\ooad-miniproject; mvn spring-boot:run\"",
+        "start:frontend": "cd frontend && npm run dev",
+        "launch": "concurrently \"npm run start:backend\" \"npm run start:frontend\""
+    },
+    "devDependencies": {
+        "concurrently": "^9.1.2"
+    },
+    "dependencies": {
+        "face-api.js": "^0.22.2"
+    }
+}

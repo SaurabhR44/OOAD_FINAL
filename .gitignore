@@ -1,0 +1,39 @@
+# Maven
+**/target/
+**.tag
+**.releaseBackup
+**.versionsBackup
+**.next
+release.properties
+dependency-reduced-pom.xml
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Logs
+*.log
+*.txt
+**/backend_log/
+
+# Node/NPM
+**/node_modules/
+**/dist/
+**/dist-ssr/
+**/dist-electron/
+*.local
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Misc
+.env
+.env.*
+*.bak
+*.tmp

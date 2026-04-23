@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdaptiveExam | Intelligence Redefined</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --accent: #f43f5e;
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        .glass-container {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            color: var(--text-dim);
+            margin-bottom: 32px;
+            font-size: 1.1rem;
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Exam State */
+        .exam-box {
+            display: none;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .difficulty-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .diff-easy {
+            background: #10b981;
+        }
+
+        .diff-medium {
+            background: #f59e0b;
+        }
+
+        .diff-hard {
+            background: #ef4444;
+        }
+
+        .question-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .question-text {
+            font-size: 1.4rem;
+            font-weight: 500;
+            line-height: 1.4;
+            margin-bottom: 32px;
+        }
+
+        .option-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            padding: 18px 24px;
+            border-radius: 12px;
+            text-align: left;
+            font-family: inherit;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .option-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary);
+        }
+
+        /* Proctoring UI */
+        .proctoring-panel {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            width: 260px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            z-index: 100;
+        }
+
+        .proctor-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .pulse {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 0 rgba(16, 185, 129, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0px rgba(16, 185, 129, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0px rgba(16, 185, 129, 0);
+            }
+        }
+
+        .violation-banner {
+            position: fixed;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--accent);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 99px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 20px 25px -5px rgba(239, 68, 68, 0.4);
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+        }
+
+        .violation-banner.active {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="violation-banner" id="banner">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+            </path>
+        </svg>
+        <span id="banner-text">Suspicious Activity Detected</span>
+    </div>
+
+    <!-- Login Context -->
+    <div class="glass-container" id="login-ctx">
+        <h1>Adaptive Exam</h1>
+        <p class="subtitle">Enter your credentials to begin</p>
+
+        <div class="input-group">
+            <input type="text" id="username" placeholder="Username (student1)" autocomplete="off">
+        </div>
+
+        <button class="btn" onclick="handleLogin()">Launch Examination</button>
+    </div>
+
+    <!-- Exam Context -->
+    <div class="exam-box" id="exam-ctx">
+        <div class="glass-container" style="max-width: 800px;">
+            <div id="difficulty-indicator"></div>
+            <div class="question-card">
+                <div class="question-text" id="q-text">Initializing adaptive engine...</div>
+                <div class="option-grid" id="options-list"></div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; color: var(--text-dim);">
+                <span>Question ID: <span id="q-id">--</span></span>
+                <span id="timer">Ongoing Session</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Monitoring Panel -->
+    <div class="proctoring-panel hidden" id="status-panel">
+        <div class="proctor-header">
+            <div class="pulse"></div>
+            <span style="font-weight: 600;">Live Proctoring</span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-dim);">
+            Feed: <span style="color: #10b981;">Encrypted</span><br>
+            Audio: <span style="color: #10b981;">Analyzing</span><br>
+            Flags: <span id="flag-count">0</span>
+        </p>
+    </div>
+
+    <script>
+        let studentId = 1;
+        let examId = 1;
+        let flagCount = 0;
+
+        async function handleLogin() {
+            if (window.location.protocol === 'file:') {
+                alert("Please run this via http://localhost:8080");
+                return;
+            }
+
+            const username = document.getElementById('username').value;
+            const btn = document.querySelector('.btn');
+            btn.innerText = "Authenticating...";
+            btn.style.opacity = "0.7";
+
+            try {
+                const res = await fetch(`/api/auth/login?username=${username}&password=pass`, { method: 'POST' });
+                if (!res.ok) throw new Error("Unauthorized");
+
+                document.getElementById('login-ctx').classList.add('hidden');
+                document.getElementById('exam-ctx').style.display = 'block';
+                document.getElementById('status-panel').classList.remove('hidden');
+
+                fetchNextQuestion();
+                console.log("Proctoring session initialized in silent mode.");
+            } catch (e) {
+                alert("Login Failed. User 'student1' exists by default.");
+                btn.innerText = "Launch Examination";
+                btn.style.opacity = "1";
+            }
+        }
+
+        async function fetchNextQuestion() {
+            const qtext = document.getElementById('q-text');
+            try {
+                const res = await fetch(`/api/exam/start`);
+                if (!res.ok) {
+                    const errorText = await res.text();
+                    throw new Error(`Server Error: ${res.status} - ${errorText}`);
+                }
+                const q = await res.json();
+                if (!q) throw new Error("No question returned from server.");
+                renderQuestion(q);
+            } catch (e) {
+                console.error(e);
+                qtext.innerText = "⚠️ " + e.message;
+                qtext.style.color = "#ef4444";
+            }
+        }
+
+        function renderQuestion(q) {
+            const qtext = document.getElementById('q-text');
+            qtext.style.color = "var(--text-main)";
+            const diffClass = `diff-${q.difficulty.toLowerCase()}`;
+            document.getElementById('difficulty-indicator').innerHTML = `<span class="difficulty-badge ${diffClass}">${q.difficulty}</span>`;
+            qtext.innerText = q.content;
+            document.getElementById('q-id').innerText = q.id || 'N/A';
+
+            const list = document.getElementById('options-list');
+            list.innerHTML = '';
+
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt.text;
+                btn.onclick = () => submitAnswer(index === q.correctOptionIndex, q.difficulty);
+                list.appendChild(btn);
+            });
+        }
+
+        async function submitAnswer(isCorrect, level) {
+            const qtext = document.getElementById('q-text');
+            try {
+                const res = await fetch(`/api/exam/submit?studentId=${studentId}&examId=${examId}&isCorrect=${isCorrect}&currentLevel=${level}`, { method: 'POST' });
+                if (!res.ok) throw new Error("Submission failed");
+                const nextQ = await res.json();
+                renderQuestion(nextQ);
+            } catch (e) {
+                qtext.innerText = "⚠️ Submission failed: " + e.message;
+            }
+        }
+
+        function showAlert(msg) {
+            const banner = document.getElementById('banner');
+            document.getElementById('banner-text').innerText = msg;
+            banner.classList.add('active');
+            flagCount++;
+            document.getElementById('flag-count').innerText = flagCount;
+            setTimeout(() => banner.classList.remove('active'), 4000);
+        }
+
+        function startProctoringSim() {
+            // Silenced fake alerts as requested. 
+            // Alerts will only be shown if showAlert is called by a real event.
+            console.log("Proctoring engine active (Silent Mode)");
+        }
+    </script>
+</body>
+
+</html>
