@@ -1,61 +1,94 @@
-# Proctor IQ - Adaptive Online Examination System
+# 🎓 Proctor IQ - Adaptive Online Examination System
 
-Welcome to the **Proctor IQ** codebase! This is a state-of-the-art Adaptive Online Examination System built with rigorous Object-Oriented Analysis and Design (OOAD) principles and robust software architecture at its core.
+![Proctor IQ Overview](https://img.shields.io/badge/Status-Completed-brightgreen.svg)
+![React](https://img.shields.io/badge/Frontend-React.js-blue.svg)
+![Spring Boot](https://img.shields.io/badge/Backend-Spring_Boot-green.svg)
+![OOAD](https://img.shields.io/badge/Design-OOAD_Driven-orange.svg)
 
-## 🚀 Features
-- **Adaptive Examination Engine**: Dynamically adjusts the difficulty of questions based on real-time student performance, providing a highly personalized and accurate assessment.
-- **Robust Proctoring & Security**: Features real-time violation detection, comprehensive audit logs, and proxy-based access control to ensure maximum exam integrity.
-- **Micro-Architected Backend**: Driven by a suite of carefully implemented GoF Design Patterns (Strategy, Observer, Adapter, Proxy, Factory, Singleton, Builder, Facade).
-- **Extensible Reporting**: Seamlessly exports exam results into multiple formats (PDF, Excel) using the Adapter pattern without modifying the core business logic.
-- **Responsive UI**: A modern React frontend for seamless student, proctor, and admin experiences.
+Proctor IQ is a professional, enterprise-grade Adaptive Online Examination System equipped with live AI biometric proctoring. It dynamically adjusts exam difficulty based on real-time student performance and mathematically ensures academic integrity.
 
-## 🏛️ System Architecture & OOAD Principles
+---
 
-Proctor IQ is engineered as a definitive showcase of Object-Oriented best practices. The system architecture is divided into clear logical spheres.
+## ✨ Core Features
 
-### 🧩 Design Patterns Implemented
-- **Strategy Pattern (`AdaptiveEngine`)**: Dynamically swaps between `EasyStrategy`, `MediumStrategy`, and `HardStrategy` depending on live accuracy.
-- **Observer Pattern**: Real-time alerts and audit logs decoupled and triggered asynchronously via `ViolationDetectedEvent`.
-- **Adapter Pattern (`ReportExporter`)**: Flexible report generation using `PdfReportAdapter` and `ExcelReportAdapter`.
-- **Proxy Pattern (`ProctoringServiceProxy`)**: Wraps core proctoring for strict access control and logging.
-- **Factory Pattern (`ExamSessionFactory`)**: Encapsulates complex exam session instantiation and isolates creation logic.
-- **Singleton Pattern**: Ensures efficient resource management for stateless, system-wide services like `ViolationService` and `JwtUtil`.
-- **Facade Pattern (`ExamServiceImpl`)**: Simplifies the complex orchestration of exam initialization, databases, and engine setups behind a single interface.
-- **Builder Pattern**: Used extensively in `Question` and `ExamSession` for safe and readable construction of complex objects.
+*   **🧠 Adaptive Difficulty Engine:** Utilizes the Strategy Pattern to dynamically serve Easy, Medium, or Hard questions based on the student's real-time accuracy percentage.
+*   **👁️ Live AI Biometric Proctoring:** Client-side facial recognition (via `face-api.js`) that immediately detects multiple faces or absence of a face.
+*   **🛡️ Anti-Cheat & Malpractice Detection:** Actively tracks and logs tab switching, right-clicking, dev tools usage, and blocks copy/pasting.
+*   **⚖️ Automated Termination:** Automatically terminates exams upon reaching an 8-violation "Kick Threshold" and logs the incident to the backend.
+*   **📊 Comprehensive Analytics:** Post-exam dashboard showing accuracy, time usage, performance by difficulty, topic breakdown, and competency level.
 
-### 📐 SOLID & GRASP Principles
-- **SRP & High Cohesion**: Services like `JwtUtil` and `ViolationService` do exactly one thing, leading to highly cohesive modules.
-- **Open-Closed (OCP)**: The difficulty calculation engine is open for new strategies but completely closed to modification.
-- **Dependency Inversion (DIP)**: Core modules and controllers rely entirely on abstractions (interfaces) rather than hardcoded implementations.
-- **Information Expert & Creator**: Responsibilities for logic execution and object creation are meticulously assigned to the classes that possess the necessary data (e.g., `AdaptiveEngine`, `ExamServiceImpl`).
-- **Low Coupling**: The React frontend communicates strictly through a centralized `apiService.js`, decoupling UI components from raw fetch logic.
+---
 
 ## 🛠️ Technology Stack
-- **Backend**: Java, Spring Boot, Spring Security (JWT)
-- **Frontend**: React, Vite
-- **Database**: Relational Database (via JPA/Hibernate)
 
-## ⚙️ Quick Start
+*   **Frontend:** React.js, Vite, Tailwind CSS, Recharts, `face-api.js`
+*   **Backend:** Java 17, Spring Boot, Spring Security (JWT), Hibernate / JPA
+*   **Database:** H2 (In-Memory) for rapid development & testing
 
-**1. Clone the repository:**
+---
+
+## 🚀 Quick Start Guide
+
+### Option 1: One-Click Run (Windows)
+Simply execute the included launcher script from the root directory:
 ```bash
-git clone https://github.com/SaurabhR44/OOAD_FINAL.git
-cd ooad-miniproject
+.\launch-proctor-iq.bat
 ```
 
-**2. Start the Backend:**
-Ensure you have Maven and JDK 17+ installed. Navigate to the root directory and run:
+### Option 2: Run Separately
+**Backend:**
 ```bash
+cd ooad-miniproject
 mvn spring-boot:run
 ```
 
-**3. Start the Frontend:**
-Open a new terminal, navigate to the `frontend` directory, install dependencies, and run:
+**Frontend:**
 ```bash
-cd frontend
+cd ooad-miniproject/frontend
 npm install
 npm run dev
 ```
 
+### 🔑 Test Credentials
+*   **Student Accounts:** `pes1ug23am001` to `pes1ug23am100` (Password: `pass`)
+*   **Admin Account:** `admin` (Password: `admin`)
+
 ---
-*Developed as a comprehensive OOAD Project.*
+
+## 🏛️ OOAD & Design Patterns Matrix
+
+This project was built strictly adhering to Object-Oriented Analysis and Design (OOAD) principles.
+
+### General OOP Concepts
+*   **Encapsulation:** Implemented in `Question.java` (Private fields, Builder pattern).
+*   **Inheritance & Polymorphism:** Implemented in `User.java` (Abstract base class extended by `Student`/`Faculty`).
+
+### SOLID Principles
+*   **Single Responsibility (SRP):** `JwtUtil.java` (Token parsing only) and `ViolationService.java` (Integrity tracking only).
+*   **Open-Closed (OCP):** `DifficultyStrategy.java` (Engine is open for new difficulty algorithms, closed for modification).
+*   **Liskov Substitution (LSP):** `EasyStrategy`, `MediumStrategy` implement `DifficultyStrategy` interchangeably.
+*   **Dependency Inversion (DIP):** Service layer uses interface-based constructor injection.
+
+### GRASP Principles
+*   **Controller:** `ExamController.java` (Primary UI-to-Backend router).
+*   **Creator:** `ExamServiceImpl.java` (Responsible for instantiating complex `ExamSession` entities).
+*   **Information Expert:** `AdaptiveEngine.java` (Selects next question based on its internal session history data).
+*   **Low Coupling:** `apiService.js` (Frontend networking separated from UI).
+
+### GoF Design Patterns
+*   **Strategy Pattern:** `AdaptiveEngine.java` dynamically swaps `DifficultyStrategy` algorithms at runtime based on the score.
+*   **Builder Pattern:** `ExamServiceImpl.java` builds the massive `ExamSession` object safely.
+*   **Facade Pattern:** `ExamServiceImpl.startExam()` hides database/audit orchestration behind a single call.
+*   **Proxy Pattern:** `ProctoringServiceProxy.java` intercepts calls for logging/security.
+*   **Singleton Pattern:** Spring IoC container globally manages `@Service` classes like `ViolationService`.
+
+---
+
+## 👥 Development Team
+*   **Member 1 (Frontend & Data Flow):** React UI, Reporting Adapters, Observer Events.
+*   **Member 2 (Architecture & Adaptive Engine):** Spring Boot Core, Strategy Pattern, Builder Pattern.
+*   **Member 3 (Security & DB Integrity):** JWT Auth, Biometric Proctoring, Proxy Pattern.
+
+---
+
+*This project was developed as a university mini-project demonstrating mastery over Software Engineering and Design Patterns.*
